@@ -194,15 +194,15 @@ function initializeAppLogic() {
  */
 async function loadAllComponents() {
     // Load structural components
-    await loadComponent('./components/Header.html', 'header-container');
-    await loadComponent('./pages/Home.html', 'main-content');
-    await loadComponent('./components/Footer.html', 'footer-container');
+    await loadComponent('/components/Header.html', 'header-container');
+    await loadComponent('/pages/Home.html', 'main-content');
+    await loadComponent('/components/Footer.html', 'footer-container');
 
     // Load sections into the main content placeholders
-    await loadComponent('./components/Hero.html', 'hero-container');
-    await loadComponent('./components/About.html', 'about-container');
-    await loadComponent('./components/Projects.html', 'projects-container');
-    await loadComponent('./components/Contact.html', 'contact-container');
+    await loadComponent('/components/Hero.html', 'hero-container');
+    await loadComponent('/components/About.html', 'about-container');
+    await loadComponent('/components/Projects.html', 'projects-container');
+    await loadComponent('/components/Contact.html', 'contact-container');
 
     // Once all components are loaded, initialize the JavaScript logic
     initializeAppLogic();
