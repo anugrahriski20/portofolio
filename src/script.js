@@ -1,4 +1,4 @@
-import { loadComponent } from './src/utils/dom.js';
+import { loadComponent } from './utils/dom.js';
 
 /**
  * Menginisialisasi semua logika DOM setelah komponen dimuat.
@@ -194,15 +194,15 @@ function initializeAppLogic() {
  */
 async function loadAllComponents() {
     // Load structural components
-    await loadComponent('./src/components/Header.html', 'header-container');
-    await loadComponent('./src/pages/Home.html', 'main-content');
-    await loadComponent('./src/components/Footer.html', 'footer-container');
+    await loadComponent('./components/Header.html', 'header-container');
+    await loadComponent('./pages/Home.html', 'main-content');
+    await loadComponent('./components/Footer.html', 'footer-container');
 
     // Load sections into the main content placeholders
-    await loadComponent('./src/components/Hero.html', 'hero-container');
-    await loadComponent('./src/components/About.html', 'about-container');
-    await loadComponent('./src/components/Projects.html', 'projects-container');
-    await loadComponent('./src/components/Contact.html', 'contact-container');
+    await loadComponent('./components/Hero.html', 'hero-container');
+    await loadComponent('./components/About.html', 'about-container');
+    await loadComponent('./components/Projects.html', 'projects-container');
+    await loadComponent('./components/Contact.html', 'contact-container');
 
     // Once all components are loaded, initialize the JavaScript logic
     initializeAppLogic();

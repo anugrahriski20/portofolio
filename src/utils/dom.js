@@ -6,9 +6,14 @@
  */
 export async function loadComponent(path, targetId) {
     try {
-        const response = await fetch(path);
+        // Menggunakan path relatif yang benar dari root (public folder)
+        const fullPath = path.startsWith('./') ? path.substring(2) : path;
+        
+        const response = await fetch(fullPath);
         if (!response.ok) {
-            throw new Error(`Gagal memuat komponen: ${path}`);
+            // Log error response status for debugging deployment issues
+            console.error(`Gagal memuat komponen: ${fullPath}. Status: ${response.status}`);
+            throw new Error(`Gagal memuat komponen: ${fullPath}`);
         }
         const html = await response.text();
         const targetElement = document.getElementById(targetId);
