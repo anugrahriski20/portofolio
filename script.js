@@ -1,4 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
+import { loadComponent } from './src/utils/dom.js';
+
+/**
+ * Menginisialisasi semua logika DOM setelah komponen dimuat.
+ */
+function initializeAppLogic() {
     const navToggle = document.getElementById('nav-toggle');
     const navMenu = document.getElementById('nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -6,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const header = document.getElementById('header');
     const contactForm = document.getElementById('contactForm');
 
+    // 1. Dark Mode Initialization
     if (localStorage.getItem('darkMode') === 'enabled') {
         document.body.classList.add('dark-mode');
     }
@@ -22,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 2. Mobile Navigation Toggle
     if (navToggle) {
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
@@ -29,8 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 3. Navigation Link Click & Close Menu
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
+            // Update active class on click (for immediate feedback)
             navLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
 
@@ -41,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // 4. Scroll Effects (Header & Active Link)
     window.addEventListener('scroll', function() {
         if (window.scrollY > 50) {
             header.classList.add('scrolled');
@@ -49,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const sections = document.querySelectorAll('.section');
-        const scrollPosition = window.scrollY + 200;
+        // Offset scroll position slightly below the header
+        const scrollPosition = window.scrollY + (header ? header.offsetHeight + 20 : 100);
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -67,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // 5. Intersection Observer for Animations (Fade In)
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -77,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target); // Stop observing once animated
             }
         });
     }, observerOptions);
@@ -89,11 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
+    // 6. Intersection Observer for Lazy Loading Images
     const projectImages = document.querySelectorAll('.project-image img');
     const imageObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.loading = 'eager';
+                // Note: Since the images already have loading="lazy" in HTML,
+                // this part is mostly redundant but kept for consistency if we were to change the HTML attribute.
+                // We will just unobserve.
                 imageObserver.unobserve(entry.target);
             }
         });
@@ -105,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         imageObserver.observe(img);
     });
 
+    // 7. Contact Form Validation (Demo)
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -137,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 8. Smooth Scroll
     const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
     smoothScrollLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -147,7 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                const headerHeight = header.offsetHeight;
+                // Recalculate header height dynamically
+                const headerHeight = header ? header.offsetHeight : 0;
                 const targetPosition = targetElement.offsetTop - headerHeight;
 
                 window.scrollTo({
@@ -158,12 +177,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // 9. Close menu when clicking outside
     document.addEventListener('click', function(e) {
-        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
-            if (navMenu.classList.contains('active')) {
+        if (navMenu && navToggle) {
+            const isClickInsideNav = navMenu.contains(e.target) || navToggle.contains(e.target);
+            if (!isClickInsideNav && navMenu.classList.contains('active')) {
                 navMenu.classList.remove('active');
                 navToggle.classList.remove('active');
             }
         }
     });
-});
+}
+
+/**
+ * Fungsi utama untuk memuat semua komponen.
+ */
+async function loadAllComponents() {
+    // Load structural components
+    await loadComponent('./src/components/Header.html', 'header-container');
+    await loadComponent('./src/pages/Home.html', 'main-content');
+    await loadComponent('./src/components/Footer.html', 'footer-container');
+
+    // Load sections into the main content placeholders
+    await loadComponent('./src/components/Hero.html', 'hero-container');
+    await loadComponent('./src/components/About.html', 'about-container');
+    await loadComponent('./src/components/Projects.html', 'projects-container');
+    await loadComponent('./src/components/Contact.html', 'contact-container');
+
+    // Once all components are loaded, initialize the JavaScript logic
+    initializeAppLogic();
+}
+
+// Start the application
+loadAllComponents();
